@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Network {
-  final String _url = 'http://wowbm.nadofficial.com';
+  final String _url = 'https://wowbm.nadofficial.com';
   var token;
 
   _getToken() async {

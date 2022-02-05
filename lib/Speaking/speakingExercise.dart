@@ -1,12 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:myapplication/speaking.dart';
+import 'package:myapplication/Speaking/speaking.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
-import 'model/ExerciseList_model.dart';
-import 'network_utils/api.dart';
+import '../model/ExerciseList_model.dart';
+import '../network_utils/api.dart';
 
 class SpeakingSetPage extends StatefulWidget {
   @override

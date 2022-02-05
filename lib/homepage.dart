@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myapplication/analysisList.dart';
 import 'package:myapplication/vocab.dart';
 import 'analysis.dart';
 import 'drawer.dart';
@@ -186,7 +187,7 @@ class _FirstScreenState extends State<FirstScreen> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => AnalysisPage()));
+                                    builder: (context) => AnalysisListPage()));
                           },
                           child: Card(
                             color: Color.fromARGB(255, 51, 101, 138),

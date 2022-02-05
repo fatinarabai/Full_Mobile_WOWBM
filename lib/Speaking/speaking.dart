@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:myapplication/exercise.dart';
 import 'package:myapplication/model/WritingSpeakingQuestion_model.dart';
-import 'package:myapplication/speakingSample.dart';
+import 'package:myapplication/Speaking/speakingSample.dart';
+import 'package:myapplication/Speaking/speakingSample2.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../network_utils/api.dart';
+import '../../network_utils/api.dart';
 
 class SpeakingPage extends StatefulWidget {
   final int id;
@@ -107,7 +108,7 @@ class _SpeakingPageState extends State<SpeakingPage> {
                               onPressed: () {
                                 Navigator.push(
                                   context,
-                                  new MaterialPageRoute(builder: (context) => SpeakingSamplePage(Qid)),
+                                  new MaterialPageRoute(builder: (context) => SpeakingSample2Page(Qid)),
                                   // setState(() {
                                   //   isVisible = !isVisible;
                                   // }

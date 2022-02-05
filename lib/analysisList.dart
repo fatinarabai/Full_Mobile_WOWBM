@@ -1,22 +1,26 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:myapplication/model/AnalysisList_model.dart';
 import 'package:myapplication/reading.dart';
+import 'package:myapplication/Reading/reading2.dart';
+import 'package:myapplication/viewResult.dart';
+import 'package:myapplication/viewResult2.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 import 'model/ExerciseList_model.dart';
 import 'network_utils/api.dart';
 
-class ReadingSetPage extends StatefulWidget {
+class AnalysisListPage extends StatefulWidget {
   @override
-  _ReadingSetPageState createState() => _ReadingSetPageState();
+  _AnalysisListPageState createState() => _AnalysisListPageState();
 }
 
-class _ReadingSetPageState extends State<ReadingSetPage> {
+class _AnalysisListPageState extends State<AnalysisListPage> {
 
-  Future<ExerciseList> getReadingList() async {
-    final url = Network().link("/api/exerciselist/1");
+  Future<AnalysisList> getAnalysisList() async {
+    final url = Network().link("/api/result/all");
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     final token = jsonDecode(localStorage.getString('token'));
     http.Response response = await http.get(Uri.parse(url), headers: {
@@ -28,7 +32,7 @@ class _ReadingSetPageState extends State<ReadingSetPage> {
     if (response.statusCode == 200) {
       print(response.body);
       var jsonResponse = response.body;
-      ExerciseList res = ExerciseList.fromJson(json.decode(jsonResponse));
+      AnalysisList res = AnalysisList.fromJson(json.decode(jsonResponse));
       return res;
       // Navigator.push(
       //     context, MaterialPageRoute(builder: (context) => ReadingSetPage()));
@@ -41,7 +45,7 @@ class _ReadingSetPageState extends State<ReadingSetPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text("Reading Exercises"),
+        title: Text("Analysis"),
         backgroundColor: Colors.orange,
       ),
       body: SafeArea(
@@ -50,7 +54,7 @@ class _ReadingSetPageState extends State<ReadingSetPage> {
             SizedBox(height: 10),
             Expanded(
                 child: Text(
-                  "Exercise Set Available",
+                  "Analysis History",
                   textAlign: TextAlign.start,
                   style: TextStyle(
                     color: Colors.black,
@@ -66,7 +70,18 @@ class _ReadingSetPageState extends State<ReadingSetPage> {
                   children: <Widget>[
                     Expanded(
                       child: Text(
-                        "Name",
+                        "Exercise Name",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        "Type",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.white,
@@ -91,16 +106,30 @@ class _ReadingSetPageState extends State<ReadingSetPage> {
             Expanded(
               flex: 8,
               child: Container(
-                child: FutureBuilder<ExerciseList>(
-                    future: getReadingList(),
+                child: FutureBuilder<AnalysisList>(
+                    future: getAnalysisList(),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
-                        List<Result> list = snapshot.data.result;
+                          List list = snapshot.data.result;
                         debugPrint("Has Data");
                         return ListView.builder(
                           itemCount: list.length,
                           itemBuilder: (context, index) {
                             int id=snapshot.data.result[index].id;
+                            int type=snapshot.data.result[index].exerciseTypeId;
+                            String a;
+                            if(type==1){
+                              a = "Reading";
+                            }
+                            else if(type==2){
+                              a="Writing";
+                            }
+                            else if(type==3){
+                              a="Listening";
+                            }
+                            else if(type==4){
+                              a="Speaking";
+                            }
                             return Card(
                               elevation: 0,
                               margin: EdgeInsets.all(0),
@@ -114,9 +143,7 @@ class _ReadingSetPageState extends State<ReadingSetPage> {
                                   children: <Widget>[
                                     Expanded(
                                         child: Text(
-                                          // "word",
                                           snapshot.data.result[index].exerciseName,
-                                          // "${snapshot.data[index]['word']}",
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                             fontSize: 18,
@@ -124,13 +151,22 @@ class _ReadingSetPageState extends State<ReadingSetPage> {
                                           ),
                                         )),
                                     Expanded(
-                                        child: InkWell(
-                                          onTap: () {
-                                            Navigator.push(
-                                                context,
-                                                new MaterialPageRoute(
-                                                    builder: (context) => ReadingPage(id)));
-                                          },
+                                        child: Text(
+                                          a,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        )),
+                                    Expanded(
+                                      child: InkWell(
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              new MaterialPageRoute(
+                                                  builder: (context) => ViewResult(id)));
+                                        },
                                         child: Text(
                                           "Attempt",
                                           // snapshot.data.result[index].meaning,
@@ -141,7 +177,7 @@ class _ReadingSetPageState extends State<ReadingSetPage> {
                                             fontWeight: FontWeight.w500,
                                           ),
                                         ),
-                                        ),
+                                      ),
                                     ),
                                   ],
                                 ),

@@ -38,7 +38,7 @@ class _TopicSecondPageState extends State<TopicSecondPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text("Note for Topic 1"),
+        title: Text("Note for Topic 2"),
         backgroundColor: Colors.orange,
       ),
 

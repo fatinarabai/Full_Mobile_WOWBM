@@ -6,27 +6,27 @@ import 'package:myapplication/model/ListeningQuestion_model.dart';
 import 'package:myapplication/viewResult2.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import 'package:url_launcher/url_launcher.dart';
 import 'package:splashscreen/splashscreen.dart';
+
 
 import 'network_utils/api.dart';
 
+const url = 'https://drive.google.com/file/d/1GyDOtirxeY9RQ4Nu1OELLyvwgUjEifiM/preview';
 
-class ListeningPage extends StatefulWidget {
+class Listening2Page extends StatefulWidget {
   final int id;
-  ListeningPage(this.id);
+  Listening2Page(this.id);
 
 
   @override
-  _ListeningPageState createState() => _ListeningPageState();
+  _Listening2PageState createState() => _Listening2PageState();
 }
 
-class _ListeningPageState extends State<ListeningPage> {
+class _Listening2PageState extends State<Listening2Page> {
   bool _isLoading = true;
   int questionId;
-  // List groupValue;
   int groupValue;
-  List optionId=[];
+  int optionId;
   int newValue;
 
   Future<ListeningQuestion> loadQuestion() async {
@@ -49,23 +49,6 @@ class _ListeningPageState extends State<ListeningPage> {
       throw Exception('Failed to load Question');
   }
 
-  _launchURLBrowser() async {
-    const url = 'https://drive.google.com/file/d/1GyDOtirxeY9RQ4Nu1OELLyvwgUjEifiM/preview';
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
-
-  _launchURLApp() async {
-    const url = 'https://drive.google.com/file/d/1GyDOtirxeY9RQ4Nu1OELLyvwgUjEifiM/preview';
-    if (await canLaunch(url)) {
-      await launch(url, forceSafariVC: true, forceWebView: true);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,14 +68,17 @@ class _ListeningPageState extends State<ListeningPage> {
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         String audiolink = snapshot.data.exercise.audioLink;
-                        // print(audiolink);
+                        String audioId=audiolink.substring(32);
+                        String finalId=audioId.substring(0,33);
+                        print(finalId);
+                        String drivelink="https://drive.google.com/uc?export=view&id="+finalId;
                         return Column(
                           children: <Widget>[
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Container(
                                 child: Text(
-                                  audiolink,
+                                  drivelink,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontSize: 20.0,
@@ -101,23 +87,6 @@ class _ListeningPageState extends State<ListeningPage> {
                               ),
                             ),
 
-                            RaisedButton(
-                              color: Colors.amber,
-                              onPressed: _launchURLBrowser,
-                              child: Text("Open at Browser",
-                              style: TextStyle(
-                                color: Colors.white
-                              ),),
-                            ),
-                            SizedBox(height: 8),
-                            RaisedButton(
-                              color: Colors.amber,
-                              onPressed: _launchURLApp,
-                              child: Text("Open at App",
-                                style: TextStyle(
-                                    color: Colors.white
-                                ),),
-                            ),
                           ],
                         );
 
@@ -162,17 +131,7 @@ class _ListeningPageState extends State<ListeningPage> {
                                                 setState(() {
                                                   questionId = snapshot.data.questions[i].id;
                                                   print(questionId);
-
-                                                  while(optionId.length<=questionId){
-                                                    optionId.add(0);
-                                                  }
-                                                  if(optionId[questionId]!=0){
-                                                    optionId.removeAt(questionId);
-                                                    optionId.insert(questionId, newValue);
-                                                  }
-                                                  else{
-                                                    optionId.insert(questionId, newValue);
-                                                  }
+                                                  optionId = newValue;
                                                   print(optionId);
                                                 });
                                               },
@@ -187,7 +146,7 @@ class _ListeningPageState extends State<ListeningPage> {
                               SizedBox(height: 10),
                               FlatButton(
                                 onPressed: () {
-                                  submitAns(snapshot.data.questions,optionId);
+                                  submitAns(questionId,optionId);
                                 },
                                 color: Colors.orange,
                                 shape: RoundedRectangleBorder(
@@ -223,28 +182,15 @@ class _ListeningPageState extends State<ListeningPage> {
     );
   }
 
-  Future submitAns(List Q, List Oid) async{
+  Future<Sent> submitAns(int Qid, int Oid) async{
 
-    Map<String, List<dynamic>> data;
-    //
-    // for(int i=0; i<Q.length; i++) {
-    //   print(Q[i].id);
-
-    // data=Q[i].id;
-    // data = {
-    //   "data": [
-    //     {"question_id": Q[i].id, "option_id": Oid[Q[i].id]},
-    //   ]
-    // };
-    // };
-    // print(data);
-
-    data={
-      "data":Oid
+    Map<String, List<Map<String, int>>> data = {
+      "data": [
+        {"question_id": questionId, "option_id": optionId},
+      ]
     };
 
-
-    var url = await Network().link("/api/exercise/"+widget.id.toString()+"/saveAnswerMobile");
+    var url = await Network().link("/api/exercise/"+widget.id.toString()+"/saveAnswer");
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     final token = jsonDecode(localStorage.getString('token'));
     http.Response response =
@@ -267,6 +213,46 @@ class _ListeningPageState extends State<ListeningPage> {
       print(response.body);
       print("Save failed");
     }
+  }
+}
+class Sent {
+  List<Data> data;
+
+  Sent({this.data});
+
+  Sent.fromJson(Map<String, dynamic> json) {
+    if (json['data'] != null) {
+      data = new List<Data>();
+      json['data'].forEach((v) {
+        data.add(new Data.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this.data != null) {
+      data['data'] = this.data.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+class Data {
+  int questionId;
+  int optionId;
+
+  Data({this.questionId, this.optionId});
+
+  Data.fromJson(Map<String, dynamic> json) {
+    questionId = json['question_id'];
+    optionId = json['option_id'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['question_id'] = this.questionId;
+    data['option_id'] = this.optionId;
+    return data;
   }
 }
 

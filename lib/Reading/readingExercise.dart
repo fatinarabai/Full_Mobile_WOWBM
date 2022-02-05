@@ -1,23 +1,23 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:myapplication/listening.dart';
-import 'package:myapplication/listening2.dart';
+import 'package:myapplication/reading.dart';
+import 'package:myapplication/Reading/reading2.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
-import 'model/ExerciseList_model.dart';
-import 'network_utils/api.dart';
+import '../model/ExerciseList_model.dart';
+import '../network_utils/api.dart';
 
-class ListeningSetPage extends StatefulWidget {
+class ReadingSetPage extends StatefulWidget {
   @override
-  _ListeningSetPageState createState() => _ListeningSetPageState();
+  _ReadingSetPageState createState() => _ReadingSetPageState();
 }
 
-class _ListeningSetPageState extends State<ListeningSetPage> {
+class _ReadingSetPageState extends State<ReadingSetPage> {
 
   Future<ExerciseList> getReadingList() async {
-    final url = Network().link("/api/exerciselist/3");
+    final url = Network().link("/api/exerciselist/1");
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     final token = jsonDecode(localStorage.getString('token'));
     http.Response response = await http.get(Uri.parse(url), headers: {
@@ -42,7 +42,7 @@ class _ListeningSetPageState extends State<ListeningSetPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text("Listening Exercises"),
+        title: Text("Reading Exercises"),
         backgroundColor: Colors.orange,
       ),
       body: SafeArea(
@@ -125,13 +125,13 @@ class _ListeningSetPageState extends State<ListeningSetPage> {
                                           ),
                                         )),
                                     Expanded(
-                                      child: InkWell(
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              new MaterialPageRoute(
-                                                  builder: (context) => ListeningPage(id)));
-                                        },
+                                        child: InkWell(
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                new MaterialPageRoute(
+                                                    builder: (context) => Reading2Page(id)));
+                                          },
                                         child: Text(
                                           "Attempt",
                                           // snapshot.data.result[index].meaning,
@@ -142,7 +142,7 @@ class _ListeningSetPageState extends State<ListeningSetPage> {
                                             fontWeight: FontWeight.w500,
                                           ),
                                         ),
-                                      ),
+                                        ),
                                     ),
                                   ],
                                 ),

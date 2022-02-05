@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myapplication/viewResult.dart';
+import 'package:myapplication/viewResult2.dart';
 
 class AnalysisPage extends StatefulWidget {
   @override
@@ -37,8 +38,8 @@ class _AnalysisPageState extends State<AnalysisPage> {
             shape: new RoundedRectangleBorder(
                 borderRadius: new BorderRadius.circular(20.0)),
             onPressed: () {
-              Navigator.push(context,
-                  new MaterialPageRoute(builder: (context) => ViewResult()));
+              // Navigator.push(context,
+              //     new MaterialPageRoute(builder: (context) => ViewResult2()));
             },
           ),
         ),

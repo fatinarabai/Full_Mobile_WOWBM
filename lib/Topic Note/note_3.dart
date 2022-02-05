@@ -36,7 +36,7 @@ class _TopicThirdPageState extends State<TopicThirdPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text("Note for Topic 1"),
+        title: Text("Note for Topic 3"),
         backgroundColor: Colors.orange,
       ),
 

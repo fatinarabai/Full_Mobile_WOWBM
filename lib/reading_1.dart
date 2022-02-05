@@ -242,10 +242,10 @@ class _ReadingPage2State extends State<ReadingPage2> {
                                 //   submitAns(questionId, optionId);
                                 // });
                                 submitAns(questionId, optionId);
-                                Navigator.push(
-                                    context,
-                                    new MaterialPageRoute(
-                                        builder: (context) => ViewResult()));
+                                // Navigator.push(
+                                //     context,
+                                //     new MaterialPageRoute(
+                                //         builder: (context) => ViewResult()));
                               },
                               child: Text("Yes"),
                             ),
@@ -348,8 +348,8 @@ class SubmitPage extends StatelessWidget {
             shape: new RoundedRectangleBorder(
                 borderRadius: new BorderRadius.circular(20.0)),
             onPressed: () {
-              Navigator.push(context,
-                  new MaterialPageRoute(builder: (context) => ViewResult()));
+              // Navigator.push(context,
+              //     new MaterialPageRoute(builder: (context) => ViewResult()));
             },
           ),
         ),
